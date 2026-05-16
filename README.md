@@ -93,6 +93,14 @@ pytest tests/
 
 ## Demos ausführen
 
+**Blatt 9 Setup-Check** — Gymnasium-API-Tour und SB3-Toolchain-Verifikation
+(A2C vs. DQN auf CartPole-v1, On- vs. Off-Policy-Vergleich):
+
+```bash
+python -m actor_critic_project.experiments.demos.run_sb3_explore
+python -m actor_critic_project.experiments.demos.run_sb3_explore --quick  # 5 000 Steps
+```
+
 ```bash
 python -m actor_critic_project.experiments.demos.run_reinforce_cartpole
 ```
