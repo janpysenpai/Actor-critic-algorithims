@@ -101,11 +101,37 @@ python -m actor_critic_project.experiments.demos.run_sb3_explore
 python -m actor_critic_project.experiments.demos.run_sb3_explore --quick  # 5 000 Steps
 ```
 
+**Blatt 10 Aufgabe 7** — Mini-batch REINFORCE auf CartPole-v1 und Acrobot-v1
+(mehrere Seeds, Lernkurven-Plot, JSON-Summary). Diese Demos decken Blatt 10
+Aufgabe 7 ab.
+
 ```bash
 python -m actor_critic_project.experiments.demos.run_reinforce_cartpole
+python -m actor_critic_project.experiments.demos.run_reinforce_cartpole --quick  # 2 Seeds, 5 000 Steps
+python -m actor_critic_project.experiments.demos.run_reinforce_acrobot
+python -m actor_critic_project.experiments.demos.run_reinforce_acrobot --quick
 ```
 
-Plots landen in `figures/`.
+Plots landen in `figures/`, Modelle unter `results/sheet10_*/seed_*.zip`.
+
+---
+
+## Trainierte Agenten laden
+
+```python
+from actor_critic_project.algos.mini_batch_reinforce import MiniBatchREINFORCE
+import gymnasium as gym
+
+model = MiniBatchREINFORCE.load("results/sheet10_cartpole/seed_0")
+env = gym.make("CartPole-v1", render_mode="human")
+obs, _ = env.reset()
+done = False
+while not done:
+    action, _ = model.predict(obs, deterministic=False)
+    obs, reward, terminated, truncated, _ = env.step(action)
+    done = terminated or truncated
+env.close()
+```
 
 ---
 
