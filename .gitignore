@@ -36,6 +36,7 @@ figures/*.png
 figures/*.pdf
 results/*.json
 results/*.png
+results/sheet*/
 *.log
 *.npz
 *.npy
