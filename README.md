@@ -135,6 +135,41 @@ env.close()
 
 ---
 
+## Unified Pipeline
+
+Einheitliche API fuer Training und Evaluation aller Algo-Env-Kombinationen:
+
+```python
+from actor_critic_project.utils.training import train_one
+from actor_critic_project.utils.evaluation import evaluate_model
+from stable_baselines3 import A2C
+
+result = train_one("a2c", "CartPole-v1", total_timesteps=10_000, seed=0)
+# result.model_path enthaelt den Pfad zur gespeicherten .zip-Datei (wenn log_dir gesetzt)
+
+model = A2C.load(result.model_path)
+eval_result = evaluate_model(model, "CartPole-v1", n_episodes=20, seed=0)
+print(f"Mean Return: {eval_result.mean_return:.1f} +/- {eval_result.std_return:.1f}")
+```
+
+Kompatibilitaet Algorithmus x Umgebung (x = unterstuetzt, - = nicht kompatibel):
+
+| Algorithmus | CartPole-v1 | Acrobot-v1 | MountainCar-v0 | MountainCarContinuous-v0 | Pendulum-v1 |
+|---|---|---|---|---|---|
+| mini_batch_reinforce | x | x | x | x | x |
+| a2c | x | x | x | x | x |
+| ppo | x | x | x | x | x |
+| trpo | x | x | x | x | x |
+| ars | x | x | x | x | x |
+| ddpg | - | - | - | x | x |
+| td3 | - | - | - | x | x |
+| sac | - | - | - | x | x |
+| tqc | - | - | - | x | x |
+
+Gesamt: 33 kompatible Paare (3 x 5 Discrete-Envs + 2 x 9 Box-Envs).
+
+---
+
 ## Submission reproduzieren
 
 ```bash
