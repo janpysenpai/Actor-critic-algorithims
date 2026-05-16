@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtuelle Umgebungen
+.venv/
+venv/
+env/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Notebooks / Test-Caches
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Claude-interne Konfiguration (nicht für Abgabe relevant)
+CLAUDE.md
+.claude/
+
+# Vorlesungsmaterialien (urheberrechtlich geschützt)
+"Übungsaufgaben + Skript"/
+Übungsaufgaben*/
+
+# Output / Caches
+# figures/submission/ und results/submission/ sind NICHT ignoriert
+# (werden für den schriftlichen Teil benötigt).
+figures/*.png
+figures/*.pdf
+results/*.json
+results/*.png
+*.log
+*.npz
+*.npy
+
+# Modell-Checkpoints / SB3-Artefakte
+*.pt
+*.pth
+*.zip
+*.tar
+logs/
+runs/
+tb_logs/
+wandb/
+monitor.csv
+pip_freeze.txt
