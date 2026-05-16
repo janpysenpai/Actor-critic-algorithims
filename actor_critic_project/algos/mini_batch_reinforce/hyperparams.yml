@@ -1,0 +1,54 @@
+CartPole-v1:
+  n_envs: 1
+  n_timesteps: !!float 1e5
+  policy: "MlpPolicy"
+  n_episodes_per_update: 10
+  gamma: 0.99
+  learning_rate: !!float 7e-4
+  ent_coef: 0.0
+  normalize_returns: true
+  max_grad_norm: 0.5
+
+Acrobot-v1:
+  n_envs: 1
+  n_timesteps: !!float 2e5
+  policy: "MlpPolicy"
+  n_episodes_per_update: 16
+  gamma: 0.99
+  learning_rate: !!float 7e-4
+  ent_coef: 0.01
+  normalize_returns: true
+  max_grad_norm: 0.5
+
+MountainCar-v0:
+  n_envs: 1
+  n_timesteps: !!float 5e5
+  policy: "MlpPolicy"
+  n_episodes_per_update: 32
+  gamma: 0.99
+  learning_rate: !!float 1e-3
+  ent_coef: 0.05
+  normalize_returns: true
+  max_grad_norm: 0.5
+
+MountainCarContinuous-v0:
+  n_envs: 1
+  n_timesteps: !!float 3e5
+  policy: "MlpPolicy"
+  n_episodes_per_update: 16
+  gamma: 0.99
+  learning_rate: !!float 7e-4
+  ent_coef: 0.0
+  normalize_returns: true
+  max_grad_norm: 0.5
+
+Pendulum-v1:
+  n_envs: 1
+  n_timesteps: !!float 2e5
+  policy: "MlpPolicy"
+  n_episodes_per_update: 16
+  gamma: 0.99
+  learning_rate: !!float 7e-4
+  ent_coef: 0.0
+  normalize_returns: true
+  max_grad_norm: 0.5
