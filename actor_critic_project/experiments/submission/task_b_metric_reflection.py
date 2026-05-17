@@ -98,8 +98,11 @@ def _metrics_from_monitor(
         se_steps = None
 
     wc_1k = wallclock_per_1k_steps(wallclock_s, max(total_steps, 1))
+    # Wenn die Schwelle nicht erreicht wurde, ist Sample-Efficiency strukturell
+    # undefiniert — als NaN markieren statt als 0.0, damit der Plot das
+    # nicht als "schnell konvergiert" missdeutet.
     se_norm = (
-        (1.0 - se_steps / max(total_steps, 1)) if se_steps is not None else 0.0
+        (1.0 - se_steps / max(total_steps, 1)) if se_steps is not None else float("nan")
     )
 
     return {
@@ -177,6 +180,26 @@ def _std_across_env_seed(df: pd.DataFrame, col: str, family: str) -> pd.Series:
     return fam.groupby("algo")[col].std(ddof=0).fillna(0.0)
 
 
+def _placeholder_subplot(ax, title: str, message: str) -> None:
+    """Markiert ein Subplot als nicht-aussagekraeftig und zeigt eine
+    erklaerende Textbox statt entarteter Balken (z.B. Sample-Efficiency,
+    wenn die Schwelle nie erreicht wurde, oder Seed-Std bei n_seeds=1)."""
+    ax.text(
+        0.5, 0.5, message,
+        transform=ax.transAxes,
+        ha="center", va="center",
+        fontsize=9, color="dimgray",
+        wrap=True,
+        bbox=dict(boxstyle="round,pad=0.6", facecolor="whitesmoke",
+                  edgecolor="lightgray"),
+    )
+    ax.set_title(title, fontsize=9)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+
+
 def _plot_metric_grid(metrics_df: pd.DataFrame, figure_dir: pathlib.Path) -> None:
     families = metrics_df["family"].unique()
     colors = {"tabular": "steelblue", "deep": "darkorange"}
@@ -190,11 +213,45 @@ def _plot_metric_grid(metrics_df: pd.DataFrame, figure_dir: pathlib.Path) -> Non
     std_vals = metrics_df.groupby(["family", "algo"])["final_mean_return_norm"].transform("std").fillna(0.0)
     metrics_df[std_col] = std_vals
 
+    # Pro (family, algo) zaehlen wir die Seeds, um die Aussagekraft von
+    # return_std und sample_efficiency datengetrieben einschaetzen zu koennen.
+    seeds_per_group = metrics_df.groupby(["family", "algo"])["seed"].nunique()
+    max_seeds_per_family: dict = (
+        seeds_per_group.groupby(level=0).max().to_dict() if len(seeds_per_group) else {}
+    )
+
     for idx, (col, title) in enumerate(_METRIC_COLS):
         ax = axes_flat[idx]
         if col not in metrics_df.columns:
             ax.set_visible(False)
             continue
+
+        # Degeneriertes Sample-Efficiency-Panel: keiner der Algorithmen hat die
+        # Schwelle erreicht (alles NaN). Statt leerer/Null-Balken eine Textbox.
+        if col == "sample_efficiency_norm":
+            finite_count = int(np.isfinite(metrics_df[col].to_numpy()).sum())
+            if finite_count == 0:
+                total_runs = len(metrics_df)
+                _placeholder_subplot(
+                    ax, title,
+                    "Schwelle 0.7 (norm.) bei "
+                    f"keinem der {total_runs} Runs\nim 5 000-Step-Budget erreicht.\n"
+                    "Sample-Efficiency hier strukturell\nnicht aussagekraeftig "
+                    "(volle Lauflaenge\noder niedrigere Schwelle noetig).",
+                )
+                continue
+
+        # Degeneriertes Return-Std-Panel: ueberall nur ein Seed pro (family, algo).
+        if col == "return_std":
+            max_seeds = max(max_seeds_per_family.values()) if max_seeds_per_family else 0
+            if max_seeds < 2:
+                _placeholder_subplot(
+                    ax, title,
+                    f"Nur {max_seeds} Seed pro (Family, Algo).\n"
+                    "Standardabweichung definitionsgemaess 0;\n"
+                    "Metrik braucht n_seeds >= 2,\num nicht-trivial zu sein.",
+                )
+                continue
 
         all_bar_tops: list[float] = []
         all_bar_bottoms: list[float] = []
