@@ -230,6 +230,42 @@ eingetragen — Submission-Outputs werden versioniert (Modell-Zips als `*.zip` a
 
 ---
 
+## Submission Task (b) — Metric Reflection
+
+Vergleicht normalisierte Metriken der Tabular-Baselines (Q-Learning, SARSA auf
+FrozenLake-v1 und Taxi-v3) mit den Deep-RL-Ergebnissen aus Task (a).
+
+**Quick-Run** (< 1 Minute, 200 Tabular-Episoden + Task-(a)-Quick-Ergebnisse):
+
+```bash
+python -m actor_critic_project.experiments.submission.task_b_metric_reflection \
+    --quick --regenerate-tabular \
+    --task-a-dir results/submission/task_a
+```
+
+**Voller Lauf** (nach Task-(a)-Sweep):
+
+```bash
+python -m actor_critic_project.experiments.submission.task_b_metric_reflection \
+    --regenerate-tabular \
+    --task-a-dir results/submission/task_a
+```
+
+Die generierte `reflection.md` enthält `[TODO: User-Text]`-Marker — diese
+Prosa-Abschnitte sind vom Autor auszufüllen.
+
+Output-Pfade:
+
+| Inhalt | Pfad |
+|---|---|
+| Metriken (CSV/JSON) | `results/submission/task_b/task_b_metrics.csv` |
+| Reflexions-Report | `results/submission/task_b/reflection.md` |
+| Metrik-Raster-Plot | `figures/submission/task_b/metric_grid.png` |
+| Cross-World-Scatter | `figures/submission/task_b/cross_world_scatter.png` |
+| Wallclock-Vergleich | `figures/submission/task_b/wallclock_comparison.png` |
+
+---
+
 ## Hinweis zur KI-Unterstützung
 
 Die technische Implementierung wurde mit Unterstützung von Claude (Anthropic)
