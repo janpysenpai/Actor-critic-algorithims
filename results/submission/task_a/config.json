@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-05-17T13:09:50.761083+00:00",
+  "git_sha": "6650ae39327413978861b8bbdc866d650d3915ac",
+  "python_version": "3.9.6",
+  "sb3_version": "2.7.1",
+  "algos": [
+    "mini_batch_reinforce",
+    "a2c",
+    "ppo"
+  ],
+  "env_ids": [
+    "CartPole-v1",
+    "Pendulum-v1"
+  ],
+  "seeds": [
+    0
+  ],
+  "total_timesteps": 5000,
+  "device": "cpu",
+  "quick": true,
+  "n_runs": 6
+}

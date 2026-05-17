@@ -1,0 +1,59 @@
+{
+  "start_time": "2026-05-17T13:09:50.034006+00:00",
+  "git_sha": "6650ae39327413978861b8bbdc866d650d3915ac",
+  "python_version": "3.9.6 (default, Apr  7 2026, 02:38:40) \n[Clang 21.0.0 (clang-2100.0.123.102)]",
+  "sb3_version": "2.7.1",
+  "hostname": "Air-von-Jan",
+  "platform": "macOS-26.4.1-arm64-arm-64bit",
+  "config": {
+    "quick": true,
+    "device": "cpu",
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "total_timesteps": 100000,
+    "skip_task_a": false,
+    "skip_task_b": false,
+    "strict": false
+  },
+  "subtasks": {
+    "task_a_sweep": {
+      "returncode": 0,
+      "duration_s": 8.84
+    },
+    "aggregate_task_a": {
+      "returncode": 0,
+      "duration_s": 0.18
+    },
+    "plot_task_a": {
+      "returncode": 0,
+      "duration_s": 0.85
+    },
+    "task_b_reflection": {
+      "returncode": 0,
+      "duration_s": 1.35
+    }
+  },
+  "artifacts": [
+    "results/submission/task_a/runs.csv",
+    "results/submission/task_a/summary_table.csv",
+    "results/submission/task_a/summary_table.md",
+    "results/submission/task_a/config.json",
+    "results/submission/task_a/runs.json",
+    "results/submission/task_b/task_b_metrics.csv",
+    "results/submission/task_b/reflection.md",
+    "results/submission/task_b/task_b_metrics.json",
+    "figures/submission/task_a/learning_curves_CartPole-v1.png",
+    "figures/submission/task_a/final_return_bar_Pendulum-v1.png",
+    "figures/submission/task_a/final_return_bar_CartPole-v1.png",
+    "figures/submission/task_a/learning_curves_Pendulum-v1.png",
+    "figures/submission/task_a/combined_overview.png",
+    "figures/submission/task_b/wallclock_comparison.png",
+    "figures/submission/task_b/metric_grid.png",
+    "figures/submission/task_b/cross_world_scatter.png"
+  ],
+  "end_time": "2026-05-17T13:10:01.280990+00:00",
+  "total_duration_s": 11.25
+}

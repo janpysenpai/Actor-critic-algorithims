@@ -1,0 +1,7 @@
+algo,env_id,mean_eval_return,std_eval_return,mean_wallclock_s,wallclock_per_1k_steps,n_seeds,final_mean_return,sample_efficiency,auc_per_step
+a2c,CartPole-v1,203.05,0.0,1.06,0.2112,1,114.095,2892.0,164.36
+ppo,CartPole-v1,118.65,0.0,2.15,0.4292,1,71.029,3481.0,141.754
+mini_batch_reinforce,CartPole-v1,29.4,0.0,0.47,0.0936,1,27.02,80.0,29.1538
+mini_batch_reinforce,Pendulum-v1,-1223.906,0.0,0.5,0.1006,1,-1187.664,,-1183.1512
+a2c,Pendulum-v1,-1712.539,0.0,0.81,0.1626,1,-1230.666,,-1230.32
+ppo,Pendulum-v1,-1777.298,0.0,0.96,0.192,1,-1236.281,,-1243.2947

@@ -1,0 +1,62 @@
+{
+  "mini_batch_reinforce": {
+    "CartPole-v1": {
+      "0": {
+        "eval_mean": 29.4,
+        "eval_std": 18.067650649710934,
+        "wallclock_s": 0.468201042,
+        "total_timesteps": 5000,
+        "monitor_csv": "/Users/jansalama/Documents/Uni Mannheim/Reinforcement Learning/Programmieraufgaben & Code/RL-Actor-Critic-Algorithms/results/submission/task_a/mini_batch_reinforce/CartPole-v1/mini_batch_reinforce_CartPole-v1_seed0.monitor.csv"
+      }
+    },
+    "Pendulum-v1": {
+      "0": {
+        "eval_mean": -1223.9063808999997,
+        "eval_std": 340.77662677338805,
+        "wallclock_s": 0.5032053330000004,
+        "total_timesteps": 5000,
+        "monitor_csv": "/Users/jansalama/Documents/Uni Mannheim/Reinforcement Learning/Programmieraufgaben & Code/RL-Actor-Critic-Algorithms/results/submission/task_a/mini_batch_reinforce/Pendulum-v1/mini_batch_reinforce_Pendulum-v1_seed0.monitor.csv"
+      }
+    }
+  },
+  "a2c": {
+    "CartPole-v1": {
+      "0": {
+        "eval_mean": 203.05,
+        "eval_std": 70.424054839238,
+        "wallclock_s": 1.05619,
+        "total_timesteps": 5000,
+        "monitor_csv": "/Users/jansalama/Documents/Uni Mannheim/Reinforcement Learning/Programmieraufgaben & Code/RL-Actor-Critic-Algorithms/results/submission/task_a/a2c/CartPole-v1/a2c_CartPole-v1_seed0.monitor.csv"
+      }
+    },
+    "Pendulum-v1": {
+      "0": {
+        "eval_mean": -1712.53862965,
+        "eval_std": 65.89497430067479,
+        "wallclock_s": 0.813108208,
+        "total_timesteps": 5000,
+        "monitor_csv": "/Users/jansalama/Documents/Uni Mannheim/Reinforcement Learning/Programmieraufgaben & Code/RL-Actor-Critic-Algorithms/results/submission/task_a/a2c/Pendulum-v1/a2c_Pendulum-v1_seed0.monitor.csv"
+      }
+    }
+  },
+  "ppo": {
+    "CartPole-v1": {
+      "0": {
+        "eval_mean": 118.65,
+        "eval_std": 34.36171561491073,
+        "wallclock_s": 2.146229875,
+        "total_timesteps": 5000,
+        "monitor_csv": "/Users/jansalama/Documents/Uni Mannheim/Reinforcement Learning/Programmieraufgaben & Code/RL-Actor-Critic-Algorithms/results/submission/task_a/ppo/CartPole-v1/ppo_CartPole-v1_seed0.monitor.csv"
+      }
+    },
+    "Pendulum-v1": {
+      "0": {
+        "eval_mean": -1777.2976985500002,
+        "eval_std": 66.87660061477895,
+        "wallclock_s": 0.9599972909999996,
+        "total_timesteps": 5000,
+        "monitor_csv": "/Users/jansalama/Documents/Uni Mannheim/Reinforcement Learning/Programmieraufgaben & Code/RL-Actor-Critic-Algorithms/results/submission/task_a/ppo/Pendulum-v1/ppo_Pendulum-v1_seed0.monitor.csv"
+      }
+    }
+  }
+}
