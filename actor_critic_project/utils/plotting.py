@@ -117,7 +117,26 @@ def plot_metric_bar(
     stds = [float(np.std(v)) for v in per_algo_metric.values()]
 
     x = np.arange(len(algos))
-    ax.bar(x, means, yerr=stds, capsize=4)
+
+    finite = [(m, s) for m, s in zip(means, stds) if np.isfinite(m)]
+    if finite:
+        data_min = min(m - s for m, s in finite)
+        data_max = max(m + s for m, s in finite)
+        pad = max((data_max - data_min) * 0.08, abs(data_max) * 0.05, 0.5)
+
+        if max(m for m, _ in finite) <= 0:
+            # Alle Werte negativ: Balken ab gemeinsamem Minimum nach oben verankern.
+            base = data_min - pad
+            heights = [m - base for m in means]
+            ax.bar(x, heights, bottom=base, yerr=stds, capsize=4)
+            ax.set_ylim(base - pad * 0.2, data_max + pad)
+        else:
+            ax.bar(x, means, yerr=stds, capsize=4)
+            ymin = min(data_min - pad, 0) if data_min < 0 else 0
+            ax.set_ylim(ymin, data_max + pad)
+    else:
+        ax.bar(x, means, yerr=stds, capsize=4)
+
     ax.set_xticks(x)
     ax.set_xticklabels(algos, rotation=45, ha="right")
     ax.set_ylabel(metric_name)

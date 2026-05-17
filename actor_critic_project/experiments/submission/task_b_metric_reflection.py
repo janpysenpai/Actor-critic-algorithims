@@ -196,6 +196,9 @@ def _plot_metric_grid(metrics_df: pd.DataFrame, figure_dir: pathlib.Path) -> Non
             ax.set_visible(False)
             continue
 
+        all_bar_tops: list[float] = []
+        all_bar_bottoms: list[float] = []
+
         for fam in families:
             sub = metrics_df[metrics_df["family"] == fam].copy()
             if sub.empty:
@@ -205,12 +208,41 @@ def _plot_metric_grid(metrics_df: pd.DataFrame, figure_dir: pathlib.Path) -> Non
             stds = grouped.std(ddof=0).fillna(0.0)
             x = np.arange(len(means))
             offset = -0.2 if fam == "tabular" else 0.2
-            ax.bar(
-                x + offset, means.values, 0.35, yerr=stds.values,
-                label=fam, color=colors.get(fam, "gray"), capsize=3, alpha=0.85,
-            )
+
+            finite = [(m, s) for m, s in zip(means.values, stds.values) if np.isfinite(m)]
+            if finite and max(m for m, s in finite) <= 0:
+                # Alle Mittelwerte dieser Family negativ: Balken nach oben verankern
+                base = min(m - s for m, s in finite)
+                base -= max(abs(base) * 0.05, 0.01)
+                heights = [m - base if np.isfinite(m) else 0.0 for m in means.values]
+                ax.bar(
+                    x + offset, heights, 0.35, bottom=base, yerr=stds.values,
+                    label=fam, color=colors.get(fam, "gray"), capsize=3, alpha=0.85,
+                )
+                mask = np.isfinite(means.values)
+                # Tops: Mittelwert + Std (Bereich der Fehlerbalken)
+                all_bar_tops.extend((means.values[mask] + stds.values[mask]).tolist())
+                all_bar_bottoms.append(base)
+            else:
+                ax.bar(
+                    x + offset, means.values, 0.35, yerr=stds.values,
+                    label=fam, color=colors.get(fam, "gray"), capsize=3, alpha=0.85,
+                )
+                mask = np.isfinite(means.values)
+                all_bar_tops.extend((means.values[mask] + stds.values[mask]).tolist())
+                all_bar_bottoms.extend((means.values[mask] - stds.values[mask]).tolist())
+
             ax.set_xticks(x)
             ax.set_xticklabels(means.index, rotation=30, ha="right", fontsize=7)
+
+        # Explizite ylim: stets steigend nach oben, Datenbereich vollstaendig sichtbar
+        if all_bar_tops and all_bar_bottoms:
+            dmin = min(all_bar_bottoms)
+            dmax = max(all_bar_tops)
+            pad = max((dmax - dmin) * 0.08, 0.01)
+            ymin = dmin - pad if dmin <= 0 else 0
+            ymax = dmax + pad if dmax >= 0 else 0
+            ax.set_ylim(ymin, ymax)
 
         ax.set_title(title, fontsize=9)
         ax.set_xlabel("Algorithmus", fontsize=8)
