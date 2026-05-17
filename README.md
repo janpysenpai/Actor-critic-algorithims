@@ -185,6 +185,51 @@ python -m actor_critic_project.experiments.run_all_submission
 
 ---
 
+## Submission Task (a) — Evaluation Study
+
+Trainiert alle 9 Algorithmen auf allen 5 Classic-Control-Envs ueber mehrere
+Seeds und erzeugt Lernkurven, Balkendiagramme und eine Metrik-Tabelle.
+
+**Quick-Run** (< 1 Minute, 3 Algos x 2 Envs x 1 Seed x 5k Steps):
+
+```bash
+python -m actor_critic_project.experiments.submission.task_a_eval_study --quick
+```
+
+**Voller Sweep** (alle 9 Algos x 5 Envs x 3 Seeds x 100k Steps):
+
+```bash
+python -m actor_critic_project.experiments.submission.task_a_eval_study \
+    --device cpu --seeds 0 1 2 --total-timesteps 100000
+```
+
+Hinweis: Fuer die meisten Classic-Control-Algorithmen (kleine Netze) ist
+`--device cpu` schneller als `--device mps`, da der MPS-Transfer-Overhead
+die Rechenzeit dominiert. MPS lohnt sich nur bei sehr langen Sweeps mit
+grossen Netzwerken.
+
+**Aggregation und Plots** nach dem Sweep:
+
+```bash
+python -m actor_critic_project.experiments.submission.aggregate_task_a
+python -m actor_critic_project.experiments.submission.plot_task_a
+```
+
+Output-Pfade:
+
+| Inhalt | Pfad |
+|---|---|
+| Sweep-Ergebnisse (CSV/JSON) | `results/submission/task_a/runs.csv` |
+| Metrik-Tabelle (Markdown) | `results/submission/task_a/summary_table.md` |
+| Lernkurven-Plots | `figures/submission/task_a/learning_curves_<env>.png` |
+| Balkendiagramme | `figures/submission/task_a/final_return_bar_<env>.png` |
+| Kombinierte Uebersicht | `figures/submission/task_a/combined_overview.png` |
+
+`results/submission/` und `figures/submission/` sind bewusst nicht in `.gitignore`
+eingetragen — Submission-Outputs werden versioniert (Modell-Zips als `*.zip` ausgenommen).
+
+---
+
 ## Hinweis zur KI-Unterstützung
 
 Die technische Implementierung wurde mit Unterstützung von Claude (Anthropic)
