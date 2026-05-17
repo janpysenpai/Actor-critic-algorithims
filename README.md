@@ -2,17 +2,39 @@
 
 Implementierung und Evaluation von Policy-Gradient- und Actor-Critic-Algorithmen
 in Python — von eigenem Mini-batch REINFORCE (Algorithmus 32 aus dem Skript) bis
-zu vortrainierten SB3/sb3-contrib-Algorithmen (A2C, PPO, SAC, DDPG, TD3, TQC,
-ARS, TRPO). Entwickelt im Rahmen der Vorlesung *Reinforcement Learning*
+zu SB3/sb3-contrib-Algorithmen (A2C, PPO, SAC, DDPG, TD3, TQC, ARS, TRPO).
+Entwickelt im Rahmen der Vorlesung *Reinforcement Learning*
 (Prof. Dr. Leif Döring, Universität Mannheim, FSS 2026),
-Übungsblatt 11 Aufgabe 4. Theoretische Grundlage: Vorlesungsskript Kapitel 5
-und Abschnitt 7.8.
-
-Der eigene Mini-batch REINFORCE-Algorithmus erbt von
-`stable_baselines3.common.on_policy_algorithm.OnPolicyAlgorithm` und ist
-SB3-Zoo-kompatibel.
+Übungsblatt 11 Aufgabe 4.
 
 ---
+
+## Submission — Übungsblatt 11
+
+Abgabe-Reproduktion (Quick-Modus, < 10 Minuten):
+
+```bash
+python -m actor_critic_project.experiments.submission.run_all_submission --quick
+```
+
+Voller Sweep (alle 9 Algos × 5 Envs × 3 Seeds × 100k Steps, Stunden):
+
+```bash
+python -m actor_critic_project.experiments.submission.run_all_submission \
+    --device cpu --seeds 0 1 2 --total-timesteps 100000
+```
+
+Submission-Archiv bauen (nach dem Sweep):
+
+```bash
+python -m actor_critic_project.experiments.submission.build_submission_archive
+```
+
+Abgabestand: v1.0-uebungsblatt11 (siehe Git-Tag).
+
+---
+
+<!-- submission-readme-start -->
 
 ## Algorithmen
 
@@ -47,16 +69,26 @@ SB3-Zoo-kompatibel.
 ```
 actor_critic_project/
 ├── algos/
-│   └── mini_batch_reinforce/   Eigene REINFORCE-Implementation (Alg. 32)
-├── envs/                       Gymnasium-Wrapper und Hilfsklassen
-├── utils/                      Plotting, Logging, Seed-Utilities
+│   └── mini_batch_reinforce/     Eigene REINFORCE-Implementation (Alg. 32)
+├── configs/
+│   └── hyperparams/              Pro-Algo YAML-Hyperparameter (rl-zoo3-Defaults)
+├── envs/                         Gymnasium-Wrapper und Hilfsklassen
+├── utils/                        algo_registry, training, evaluation, metrics,
+│                                 plotting, normalization, seeds
 └── experiments/
-    ├── demos/                  Sanity-Checks: ein Demo-Skript pro Algo/Env
-    └── submission_tasks/       Vollständige Experiment-Skripte (Blatt 11 Aufg. 4)
+    ├── demos/                    Sanity-Checks: ein Demo-Skript pro Algo/Env
+    └── submission/               Vollstaendige Submission-Skripte (Blatt 11 Aufg. 4)
+        ├── run_all_submission.py       Top-Level-Driver
+        ├── task_a_eval_study.py        Task (a): vollstaendiger Sweep
+        ├── aggregate_task_a.py         Task (a): Aggregation
+        ├── plot_task_a.py              Task (a): Plots
+        ├── task_b_metric_reflection.py Task (b): Metric Reflection
+        ├── tabular_baselines.py        Q-Learning/SARSA Baselines
+        └── build_submission_archive.py Archiv-Builder
 
-figures/submission/             Abgabe-Plots
-results/submission/             Numerische Ergebnisse als JSON
-tests/                          Pytest-Tests
+figures/submission/               Abgabe-Plots (task_a/, task_b/)
+results/submission/               Numerische Ergebnisse, MANIFEST.json
+tests/                            Pytest-Tests
 ```
 
 ---
@@ -83,76 +115,18 @@ Python 3.11 oder neuer empfohlen.
 
 ---
 
-## Tests ausführen
+## Tests ausfuehren
 
 ```bash
-pytest tests/
+pytest -m "not slow" tests/   # schnelle Tests (< 5 Sekunden)
+pytest tests/                 # alle Tests inkl. slow (< 10 Minuten)
 ```
 
 ---
 
-## Demos ausführen
+## Kompatibilitaet Algorithmus x Umgebung
 
-**Blatt 9 Setup-Check** — Gymnasium-API-Tour und SB3-Toolchain-Verifikation
-(A2C vs. DQN auf CartPole-v1, On- vs. Off-Policy-Vergleich):
-
-```bash
-python -m actor_critic_project.experiments.demos.run_sb3_explore
-python -m actor_critic_project.experiments.demos.run_sb3_explore --quick  # 5 000 Steps
-```
-
-**Blatt 10 Aufgabe 7** — Mini-batch REINFORCE auf CartPole-v1 und Acrobot-v1
-(mehrere Seeds, Lernkurven-Plot, JSON-Summary). Diese Demos decken Blatt 10
-Aufgabe 7 ab.
-
-```bash
-python -m actor_critic_project.experiments.demos.run_reinforce_cartpole
-python -m actor_critic_project.experiments.demos.run_reinforce_cartpole --quick  # 2 Seeds, 5 000 Steps
-python -m actor_critic_project.experiments.demos.run_reinforce_acrobot
-python -m actor_critic_project.experiments.demos.run_reinforce_acrobot --quick
-```
-
-Plots landen in `figures/`, Modelle unter `results/sheet10_*/seed_*.zip`.
-
----
-
-## Trainierte Agenten laden
-
-```python
-from actor_critic_project.algos.mini_batch_reinforce import MiniBatchREINFORCE
-import gymnasium as gym
-
-model = MiniBatchREINFORCE.load("results/sheet10_cartpole/seed_0")
-env = gym.make("CartPole-v1", render_mode="human")
-obs, _ = env.reset()
-done = False
-while not done:
-    action, _ = model.predict(obs, deterministic=False)
-    obs, reward, terminated, truncated, _ = env.step(action)
-    done = terminated or truncated
-env.close()
-```
-
----
-
-## Unified Pipeline
-
-Einheitliche API fuer Training und Evaluation aller Algo-Env-Kombinationen:
-
-```python
-from actor_critic_project.utils.training import train_one
-from actor_critic_project.utils.evaluation import evaluate_model
-from stable_baselines3 import A2C
-
-result = train_one("a2c", "CartPole-v1", total_timesteps=10_000, seed=0)
-# result.model_path enthaelt den Pfad zur gespeicherten .zip-Datei (wenn log_dir gesetzt)
-
-model = A2C.load(result.model_path)
-eval_result = evaluate_model(model, "CartPole-v1", n_episodes=20, seed=0)
-print(f"Mean Return: {eval_result.mean_return:.1f} +/- {eval_result.std_return:.1f}")
-```
-
-Kompatibilitaet Algorithmus x Umgebung (x = unterstuetzt, - = nicht kompatibel):
+x = unterstuetzt, - = nicht kompatibel (Aktionsraum-Inkompatibilitaet):
 
 | Algorithmus | CartPole-v1 | Acrobot-v1 | MountainCar-v0 | MountainCarContinuous-v0 | Pendulum-v1 |
 |---|---|---|---|---|---|
@@ -166,22 +140,7 @@ Kompatibilitaet Algorithmus x Umgebung (x = unterstuetzt, - = nicht kompatibel):
 | sac | - | - | - | x | x |
 | tqc | - | - | - | x | x |
 
-Gesamt: 33 kompatible Paare (3 x 5 Discrete-Envs + 2 x 9 Box-Envs).
-
----
-
-## Submission reproduzieren
-
-```bash
-python -m actor_critic_project.experiments.run_all_submission
-```
-
-**Output-Pfade:**
-
-| Inhalt | Pfad |
-|---|---|
-| Plots (PNG) | `figures/submission/task_X_*.png` |
-| Numerische Ergebnisse | `results/submission/task_X.json` |
+Gesamt: 33 kompatible Paare (5 × 3 Discrete-Algos + 5 × 2 Box-Only-Algos + 5 × 2 Box-Envs × 4 = 15 + 18 = 33).
 
 ---
 
@@ -203,11 +162,6 @@ python -m actor_critic_project.experiments.submission.task_a_eval_study \
     --device cpu --seeds 0 1 2 --total-timesteps 100000
 ```
 
-Hinweis: Fuer die meisten Classic-Control-Algorithmen (kleine Netze) ist
-`--device cpu` schneller als `--device mps`, da der MPS-Transfer-Overhead
-die Rechenzeit dominiert. MPS lohnt sich nur bei sehr langen Sweeps mit
-grossen Netzwerken.
-
 **Aggregation und Plots** nach dem Sweep:
 
 ```bash
@@ -225,9 +179,6 @@ Output-Pfade:
 | Balkendiagramme | `figures/submission/task_a/final_return_bar_<env>.png` |
 | Kombinierte Uebersicht | `figures/submission/task_a/combined_overview.png` |
 
-`results/submission/` und `figures/submission/` sind bewusst nicht in `.gitignore`
-eingetragen — Submission-Outputs werden versioniert (Modell-Zips als `*.zip` ausgenommen).
-
 ---
 
 ## Submission Task (b) — Metric Reflection
@@ -235,24 +186,22 @@ eingetragen — Submission-Outputs werden versioniert (Modell-Zips als `*.zip` a
 Vergleicht normalisierte Metriken der Tabular-Baselines (Q-Learning, SARSA auf
 FrozenLake-v1 und Taxi-v3) mit den Deep-RL-Ergebnissen aus Task (a).
 
-**Quick-Run** (< 1 Minute, 200 Tabular-Episoden + Task-(a)-Quick-Ergebnisse):
+**Quick-Run** (< 1 Minute):
 
 ```bash
 python -m actor_critic_project.experiments.submission.task_b_metric_reflection \
-    --quick --regenerate-tabular \
-    --task-a-dir results/submission/task_a
+    --quick --regenerate-tabular --task-a-dir results/submission/task_a
 ```
 
 **Voller Lauf** (nach Task-(a)-Sweep):
 
 ```bash
 python -m actor_critic_project.experiments.submission.task_b_metric_reflection \
-    --regenerate-tabular \
-    --task-a-dir results/submission/task_a
+    --regenerate-tabular --task-a-dir results/submission/task_a
 ```
 
-Die generierte `reflection.md` enthält `[TODO: User-Text]`-Marker — diese
-Prosa-Abschnitte sind vom Autor auszufüllen.
+Die generierte `reflection.md` enthaelt `[TODO: User-Text]`-Marker fuer die
+Prosa-Reflexion, die vom Autor ausgefuellt werden.
 
 Output-Pfade:
 
@@ -266,10 +215,52 @@ Output-Pfade:
 
 ---
 
-## Hinweis zur KI-Unterstützung
+## Known Limitations
 
-Die technische Implementierung wurde mit Unterstützung von Claude (Anthropic)
-durchgeführt. Konzeption der Experimente, Auswahl der Algorithmen und
+Mini-batch REINFORCE konvergiert auf MountainCar-v0 und MountainCarContinuous-v0
+typischerweise schlecht. Diese Umgebungen haben seltene Belohnungssignale, die reine
+Monte-Carlo-Policy-Gradienten ohne Curiosity oder Reward-Shaping kaum auflosen
+koennen. Im vollen Sweep ist REINFORCE dort mit grosser Wahrscheinlichkeit das
+schwaechste Verfahren.
+
+Die rl-zoo3-Hyperparameter sind nicht fuer jedes Algo-Env-Paar optimiert. Einige
+Kombinationen (z.B. ARS auf Pendulum-v1 mit LinearPolicy) lernen mit den geerbten
+Defaults langsam und wuerden von einer env-spezifischen Suche profitieren.
+
+Die Cross-World-Metric-Normalisierung in Task (b) beruht auf empirisch ermittelten
+Heuristiken (offset, scale) und nicht auf einer etablierten Vergleichsskala. Die
+normalisierten Werte ermoglichen eine grobe Orientierung, aber keinen statistisch
+belastbaren Vergleich zwischen Tabular- und Deep-RL-Familien.
+
+`results/submission/` und `figures/submission/` sind bewusst nicht in `.gitignore`
+eingetragen — Submission-Outputs werden versioniert. Modell-Zips (`.zip`) sind
+ausgenommen.
+
+<!-- submission-readme-end -->
+
+---
+
+## Demos ausfuehren (Entwicklungsnotizen)
+
+**Blatt 9 Setup-Check** — Gymnasium-API und SB3-Toolchain-Verifikation:
+
+```bash
+python -m actor_critic_project.experiments.demos.run_sb3_explore --quick
+```
+
+**Blatt 10 Aufgabe 7** — Mini-batch REINFORCE auf CartPole-v1 und Acrobot-v1:
+
+```bash
+python -m actor_critic_project.experiments.demos.run_reinforce_cartpole --quick
+python -m actor_critic_project.experiments.demos.run_reinforce_acrobot --quick
+```
+
+---
+
+## Hinweis zur KI-Unterstuetzung
+
+Die technische Implementierung wurde mit Unterstuetzung von Claude (Anthropic)
+durchgefuehrt. Konzeption der Experimente, Auswahl der Algorithmen und
 Hyperparameter, inhaltliche Validierung der Ergebnisse sowie alle
 Submission-Texte stammen vom Autor.
 
@@ -277,4 +268,4 @@ Submission-Texte stammen vom Autor.
 
 ## Autor
 
-Jan Salama, Universität Mannheim, FSS 2026
+Jan Salama, Universitaet Mannheim, FSS 2026
