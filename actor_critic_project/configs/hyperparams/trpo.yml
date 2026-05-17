@@ -1,0 +1,35 @@
+# Hyperparameter fuer TRPO auf Classic-Control-Environments
+# Quelle: rl-zoo3 v2.7.0 (sb3_contrib.trpo)
+# Anpassungen: n_envs, n_timesteps, policy, normalize entfernt.
+
+CartPole-v1:
+  n_steps: 512
+  batch_size: 512
+  cg_damping: 1.0e-3
+  gae_lambda: 0.98
+  gamma: 0.99
+  learning_rate: 1.0e-3
+  n_critic_updates: 20
+
+Acrobot-v1:
+  n_steps: 1024
+  # Zoo: normalize: true (kein VecNormalize in dieser Pipeline)
+  # Keine weiteren Eintraege im Zoo; CartPole als Fallback fuer nicht angegebene Params
+
+MountainCar-v0:
+  n_steps: 1024
+  n_critic_updates: 20
+  # Zoo: normalize: true (kein VecNormalize in dieser Pipeline)
+
+MountainCarContinuous-v0:
+  n_steps: 1024
+  use_sde: true
+  sde_sample_freq: 4
+  # Zoo: normalize: true (kein VecNormalize in dieser Pipeline)
+
+Pendulum-v1:
+  n_steps: 1024
+  gamma: 0.9
+  n_critic_updates: 15
+  use_sde: true
+  sde_sample_freq: 4

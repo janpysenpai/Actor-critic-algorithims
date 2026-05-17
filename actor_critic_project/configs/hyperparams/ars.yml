@@ -1,0 +1,38 @@
+# Hyperparameter fuer ARS auf Classic-Control-Environments
+# Quelle: rl-zoo3 v2.7.0 (sb3_contrib.ars)
+# Anpassungen: n_envs, n_timesteps, policy, normalize, policy_kwargs entfernt.
+# Policy in dieser Pipeline: LinearPolicy fuer alle Envs (gemaess AlgoSpec).
+# Zoo-Pendulum-Eintrag als Fallback fuer Acrobot und MountainCar (kein eigener Eintrag).
+
+CartPole-v1:
+  n_delta: 2
+  # Zoo: LinearPolicy mit minimaler Konfiguration
+
+Acrobot-v1:
+  learning_rate: 0.018
+  n_delta: 4
+  n_top: 1
+  delta_std: 0.1
+  zero_policy: false
+  # Zoo: basiert auf Pendulum-Params (Fallback, kein eigener Acrobot-Eintrag)
+
+MountainCar-v0:
+  learning_rate: 0.018
+  n_delta: 8
+  n_top: 1
+  delta_std: 0.1
+  zero_policy: false
+
+MountainCarContinuous-v0:
+  learning_rate: 0.018
+  n_delta: 4
+  n_top: 1
+  delta_std: 0.2
+  zero_policy: false
+
+Pendulum-v1:
+  learning_rate: 0.018
+  n_delta: 4
+  n_top: 1
+  delta_std: 0.1
+  zero_policy: false

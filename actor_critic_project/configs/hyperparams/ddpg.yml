@@ -1,0 +1,18 @@
+# Hyperparameter fuer DDPG auf Classic-Control-Environments (nur Box-Action-Space)
+# Quelle: rl-zoo3 v2.7.0 (stable-baselines3.ddpg)
+# Anpassungen: n_envs, n_timesteps, policy, noise_type, noise_std, policy_kwargs entfernt
+#   (noise_* sind rl-zoo3-spezifisch und werden zu ActionNoise-Objekten konvertiert).
+
+MountainCarContinuous-v0:
+  gradient_steps: 1
+  train_freq: 1
+  learning_rate: 1.0e-3
+  batch_size: 256
+
+Pendulum-v1:
+  gamma: 0.98
+  buffer_size: 200000
+  learning_starts: 10000
+  gradient_steps: 1
+  train_freq: 1
+  learning_rate: 1.0e-3

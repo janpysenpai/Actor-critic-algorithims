@@ -1,0 +1,55 @@
+# Hyperparameter fuer PPO auf Classic-Control-Environments
+# Quelle: rl-zoo3 v2.7.0 (stable-baselines3.ppo)
+# Anpassungen: n_envs, n_timesteps, policy, normalize, policy_kwargs entfernt;
+#   lin_X-Schedules durch statische Floats ersetzt.
+
+CartPole-v1:
+  n_steps: 32
+  batch_size: 256
+  gae_lambda: 0.8
+  gamma: 0.98
+  n_epochs: 20
+  ent_coef: 0.0
+  learning_rate: 1.0e-3   # Zoo: lin_0.001
+  clip_range: 0.2          # Zoo: lin_0.2
+
+Acrobot-v1:
+  n_steps: 256
+  gae_lambda: 0.94
+  gamma: 0.99
+  n_epochs: 4
+  ent_coef: 0.0
+  # Zoo: normalize: true (kein VecNormalize in dieser Pipeline)
+
+MountainCar-v0:
+  n_steps: 16
+  gae_lambda: 0.98
+  gamma: 0.99
+  n_epochs: 4
+  ent_coef: 0.0
+  # Zoo: normalize: true (kein VecNormalize in dieser Pipeline)
+
+MountainCarContinuous-v0:
+  batch_size: 256
+  n_steps: 8
+  gamma: 0.9999
+  learning_rate: 7.77e-5
+  ent_coef: 0.00429
+  clip_range: 0.1
+  n_epochs: 10
+  gae_lambda: 0.9
+  max_grad_norm: 5.0
+  vf_coef: 0.19
+  use_sde: true
+  # Zoo: policy_kwargs, normalize: true (beide entfernt)
+
+Pendulum-v1:
+  n_steps: 1024
+  gae_lambda: 0.95
+  gamma: 0.9
+  n_epochs: 10
+  ent_coef: 0.0
+  learning_rate: 1.0e-3
+  clip_range: 0.2
+  use_sde: true
+  sde_sample_freq: 4

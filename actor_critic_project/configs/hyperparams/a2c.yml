@@ -1,0 +1,35 @@
+# Hyperparameter fuer A2C auf Classic-Control-Environments
+# Quelle: rl-zoo3 v2.7.0 (stable-baselines3.a2c)
+# Anpassungen: n_envs, n_timesteps, policy, normalize, policy_kwargs entfernt;
+#   lin_X-Schedules durch statische Floats ersetzt.
+
+CartPole-v1:
+  ent_coef: 0.0
+
+Acrobot-v1:
+  ent_coef: 0.0
+  # Zoo: normalize: true (kein VecNormalize in dieser Pipeline)
+
+MountainCar-v0:
+  ent_coef: 0.0
+  # Zoo: normalize: true (kein VecNormalize in dieser Pipeline)
+
+MountainCarContinuous-v0:
+  n_steps: 100
+  ent_coef: 0.0
+  use_sde: true
+  sde_sample_freq: 16
+  # Zoo: policy_kwargs mit log_std_init, normalize: true (beide entfernt)
+
+Pendulum-v1:
+  ent_coef: 0.0
+  max_grad_norm: 0.5
+  n_steps: 8
+  gae_lambda: 0.9
+  vf_coef: 0.4
+  gamma: 0.9
+  use_rms_prop: true
+  normalize_advantage: false
+  learning_rate: 7.0e-4  # Zoo: lin_7e-4
+  use_sde: true
+  # Zoo: policy_kwargs, normalize: true (beide entfernt)

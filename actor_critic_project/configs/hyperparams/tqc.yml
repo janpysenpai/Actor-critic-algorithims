@@ -1,0 +1,19 @@
+# Hyperparameter fuer TQC auf Classic-Control-Environments (nur Box-Action-Space)
+# Quelle: rl-zoo3 v2.7.0 (sb3_contrib.tqc)
+# Anpassungen: n_envs, n_timesteps, policy, policy_kwargs entfernt.
+
+MountainCarContinuous-v0:
+  learning_rate: 3.0e-4
+  buffer_size: 50000
+  batch_size: 512
+  ent_coef: 0.1
+  train_freq: 32
+  gradient_steps: 32
+  gamma: 0.9999
+  tau: 0.01
+  learning_starts: 0
+  use_sde: true
+  # Zoo: policy_kwargs mit log_std_init (entfernt)
+
+Pendulum-v1:
+  learning_rate: 1.0e-3
